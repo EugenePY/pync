@@ -2,20 +2,20 @@ GCC := gcc
 G++ := g++
 
 ## OS meta
-LDSUFFIX := dll
+LDSUFFIX := dylib
 
 ## libs
 NUMPY_INCLUDE := /Library/Python/2.7/site-packages/numpy/core/include/
 
-PY_HEADER := /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7
-LIBS = /Library/Python/2.7/site-packages/numpy/core/lib/
+PY_HEADER := /System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7/
+LIBS = /Library/Python/2.7/site-packages/numpy/core/
+PY_LIBS = /System/Library/Frameworks/Python.framework/Versions/2.7/lib/
 
 # simple flags
 C_SRC = $(wildcard src/*.c)
 CFLAG = -std=c99 -Wall -g  -O2 -I./ -I${NUMPY_INCLUDE} -isystem ${PY_HEADER} -fPIC 
 
 LDFLAG := -pthread -lm -ldl -L${LIBS} -lpython2.7
-
 # build target
 OBJS := build/gemm_simple.$(LDSUFFIX)
 
@@ -23,7 +23,7 @@ OBJS := build/gemm_simple.$(LDSUFFIX)
 all: $(OBJS)
 test: test/test_gemm_simple.out
 
-build/%.dll: build/%.o 
+build/%.dylib: build/%.o 
 	@mkdir -p $(@D)
 		$(GCC) $(CFLAGS) -shared $(LDFLAG) -o $@ $(filter %.o %.a, $^)
 
@@ -34,7 +34,7 @@ build/%.o: src/%.c
 
 # testing in C
 test/test_%: test/test_%.o
-	$(GCC) $(OBJS) $< -o $@
+	$(GCC) -lpython2.7 $(OBJS) $< -o $@
 
 test/test_%.o: test/test_%.c
 	$(GCC) -c $(CFLAG) -c $< -o $@
