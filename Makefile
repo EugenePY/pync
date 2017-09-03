@@ -20,11 +20,12 @@ LDFLAG := -pthread -lm -ldl -L${LIBS} -lpython2.7
 OBJS := build/gemm_simple.$(LDSUFFIX)
 
 # compile with python 
-#python:
-#	python setup.py
 
 all: $(OBJS)
 test: test/test_gemm_simple.out
+
+python:
+	python setup.py build --inplace 
 
 build/%.dylib: build/%.o 
 	@mkdir -p $(@D)
@@ -43,6 +44,9 @@ test/test_%.o: test/test_%.c
 	$(GCC) -c $(CFLAG) -c $< -o $@
 
 # testing in Python
+test_python:
+	PYTHONPATH='./' python python/test.py
+
 
 clean:
 	@rm -rf build
