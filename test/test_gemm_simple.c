@@ -9,10 +9,10 @@
 #include "numpy/ufuncobject.h"
 
 
-static void printf_1_array(int* buffer, int stride, int ndim) {
-	for (int i = 0; i < stride; ++i) {
-		for (int j = 0; j < ndim; ++j) {
-			printf("%i", buffer[IDX_SCHEME(i, j, stride, ndim)]);
+static void printf_1_array(int* buffer, int m, int n) {
+	for (int i = 0; i < m; ++i) {
+		for (int j = 0; j < n; ++j) {
+			printf("%i", buffer[C_IDX_SCHEME(i, j, m, n)]);
 			printf(" ");
 		}
 		printf("\n");
